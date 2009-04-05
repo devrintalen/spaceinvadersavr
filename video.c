@@ -13,12 +13,26 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 
-#define WIDTH 140
-#define HEIGHT 140
+#define WIDTH 144
+#define HEIGHT 200
 
-bool framebuffer[WIDTH][HEIGHT];
+#define TOPLINE 30
+#define BOTLINE 230
+#define V_SYNC_START 243
+#define V_SYNC_END 262
+#define LASTLINE 262
 
-bool init(void)
+#define VIDEO PORTA
+#define H_SYNC 0x0
+#define H_NOSYNC 0x1
+#define V_SYNC 0x1
+#define V_NOSYNC 0x0
+
+uint8_t framebuffer[WIDTH][HEIGHT];
+uint8_t pos;
+uint16_t line;
+
+uint8_t init(void)
 {
     uint8_t i,j;
 
@@ -39,29 +53,50 @@ bool init(void)
         }
     }
 
-    return true;
+    return 1;
 }
 
-bool enable(void)
+uint8_t enable(void)
 {
     // Turn on timer0 to start the h_sync
     TIMSK = 0x2;
 }
 
-bool disable(void)
+uint8_t disable(void)
 {
     // Disable timer0
     TIMSK = 0x0;
 }
 
-bool set_pixel(uint8_t x, uint8_t y)
+uint8_t set_pixel(uint8_t x, uint8_t y)
 {
     if ((x >= WIDTH) || (y >= HEIGHT))
     {
-        return false;
+        return 0;
     }
 
     framebuffer[x][y] = 1;
     
-    return true;
+    return 1;
+}
+
+// vertical sync interrupt
+ISR(TIMER0_COMP_vect)
+{
+    // generate sync pulse (5us)
+    VIDEO = (line < V_SYNC_START) ? V_SYNC : H_SYNC;
+    _delay_us(5);
+    VIDEO = (line < V_SYNC_START) ? V_NOSYNC : H_NOSYNC;
+
+    // start a new frame after line 262
+    if (line == BOTLINE)
+        line = 0;
+
+    // blast line buffer to screen
+    if ((line > TOPLINE) && (line < BOTLINE))
+    {
+        // TODO
+    }
+
+    line++;
 }
