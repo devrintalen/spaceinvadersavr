@@ -13,3 +13,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 
+// General
+void game_init(void);
+void game_advance(void);
+
+// Inputs
+void game_button(void);
+void game_joystick(uint8_t position);
