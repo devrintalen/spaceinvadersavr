@@ -13,8 +13,6 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 
-uint8_t init(void);
-uint8_t enable(void);
-uint8_t disable(void);
-
-uint8_t set_pixel(uint8_t x, uint8_t y);
+uint8_t video_init(void);
+uint8_t video_enable(void);
+uint8_t video_disable(void);

@@ -34,7 +34,7 @@ uint8_t framebuffer[FRAMEBUFFERSIZE];
 uint8_t *pos;
 uint16_t line;
 
-uint8_t init(void)
+uint8_t video_init(void)
 {
     uint16_t i;
 
@@ -55,29 +55,16 @@ uint8_t init(void)
     return 1;
 }
 
-uint8_t enable(void)
+uint8_t video_enable(void)
 {
     // Turn on timer0 to start the h_sync
     TIMSK = 0x2;
 }
 
-uint8_t disable(void)
+uint8_t video_disable(void)
 {
     // Disable timer0
     TIMSK = 0x0;
-}
-
-uint8_t set_pixel(uint8_t x, uint8_t y)
-{
-    if ((x >= WIDTH) || (y >= HEIGHT))
-    {
-        return 0;
-    }
-
-    // TODO this is broken
-    framebuffer[x][y] = 1;
-    
-    return 1;
 }
 
 // Sync interrupt _must_ be entered from sleep mode.
