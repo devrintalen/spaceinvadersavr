@@ -20,19 +20,38 @@ bool framebuffer[WIDTH][HEIGHT];
 
 bool init(void)
 {
-    // Set up timer0 to the sync frequency
+    uint8_t i,j;
+
+    // Set up timer0 to the sync frequency (63.5us)
+    // 63.5E-6 / (1/16E6) = 1016 = (127 * 8)
+    // So set up prescalar = clk/8
+    // and compare value = 127
+    TCCR0 = 0x42;
+    OCR0 = 127;
+    TIMSK = 0x0;
+
     // Initialize the framebuffer
+    for (i=0; i<WIDTH; i++)
+    {
+        for (j=0; j<HEIGHT; j++)
+        {
+            framebuffer[i][j] = 0;
+        }
+    }
+
     return true;
 }
 
 bool enable(void)
 {
     // Turn on timer0 to start the h_sync
+    TIMSK = 0x2;
 }
 
 bool disable(void)
 {
     // Disable timer0
+    TIMSK = 0x0;
 }
 
 bool set_pixel(uint8_t x, uint8_t y)
