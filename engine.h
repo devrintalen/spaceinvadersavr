@@ -17,4 +17,16 @@
 
 typedef sprite sprite_t;
 
+// Sprite operations
+sprite_t create_sprite(void);
+void remove_sprite(sprite_t s);
+// Setters/getters
+void sprite_set_x(sprite_t s, uint8_t x);
+void sprite_set_y(sprite_t s, uint8_t y);
+void sprite_set_data(sprite_t s, uint8_t data[]);
+uint8_t sprite_get_x(sprite_t s);
+uint8_t sprite_get_y(sprite_t s);
+uint8_t* sprite_get_data(sprite_t s);
+
+// Video interface
 uint8_t* render_line(uint8_t line);
