@@ -18,10 +18,39 @@
 struct {
     uint8_t x;
     uint8_t y;
-    uint8_t tile[8]; // up to 8x8 bits
-    sprite_t *next;
+    uint8_t tile[8]; // 8x8 bits
 } sprite;
+
+struct {
+    struct sprite *s;
+    struct list_el *next;
+} list_el;
+    
+struct list_el sprite_hash[256];
 
 uint8_t* render_line(uint8_t line)
 {
+    uint8_t start_line;
+    uint8_t render[8]; // 256 horizontal px
+    uint8_t bits;
+
+    // Sprites to draw may be as far as 7 lines above
+    start_line = (line - 7 < 0) ? 0 : line - 7;
+
+    for (i = start_line; i <= line; i++)
+    {
+        l = sprite_hash[i];
+        while (l)
+        {
+            bits = l->s.tile[line - i];
+            low_chunk = l->s.x / 8;
+            hi_chunk = (l->s.x / 8) + 1;
+
+            // Blit lower bits of sprite
+            if (low_chunk < 8)
+            {
+                render[low_chunk] = bits << (sp.x % 8);
+            }
+            // Blit higher bits of sprite
+
 }
