@@ -13,6 +13,9 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 
+#include "video.h"
+#include "engine.h"
+
 #define WIDTH 144
 #define HEIGHT 200
 // buffer size = (width / 8) * height = 144/8 * 200 = 3600
@@ -30,11 +33,9 @@
 #define V_SYNC 0x1
 #define V_NOSYNC 0x0
 
-uint8_t framebuffer[FRAMEBUFFERSIZE];
-uint8_t *pos;
 uint16_t line;
 
-uint8_t video_init(void)
+void video_init(void)
 {
     uint16_t i;
 
@@ -46,28 +47,25 @@ uint8_t video_init(void)
     OCR0 = 127;
     TIMSK = 0x0;
 
-    // Initialize the framebuffer
-    for (i=0; i<FRAMEBUFFERSIZE; i++)
-    {
-        framebuffer[i] = 0;
-    }
-
     return 1;
 }
 
-uint8_t video_enable(void)
+void video_enable(void)
 {
     // Turn on timer0 to start the h_sync
     TIMSK = 0x2;
 }
 
-uint8_t video_disable(void)
+void video_disable(void)
 {
     // Disable timer0
     TIMSK = 0x0;
 }
 
-// Sync interrupt _must_ be entered from sleep mode.
+/* Horizontal sync interrupt.
+ *
+ * This must be entered from sleep mode or else the timing will be thrown off.
+ */
 ISR(TIMER0_COMP_vect)
 {
     // generate sync pulse (5us)
@@ -82,19 +80,16 @@ ISR(TIMER0_COMP_vect)
     // blast line buffer to screen
     if ((line > TOPLINE) && (line < BOTLINE))
     {
-        // position = base + (line * (width/8))
-        // 144 / 8 = (2^7 + 2^4) / 2^3 = 2^4 + 2^1
-        pos = framebuffer + ((line - TOPLINE) << 4) + ((line - TOPLINE) << 1);
         _delay_us(12);
 
         // draw line
-        byteblast();
+        byteblast(render_line((uint8_t)line));
     }
 
     line++;
 }
 
-void byteblast(void)
+void byteblast(uint8_t bytes[])
 {
     asm("");
     return;
