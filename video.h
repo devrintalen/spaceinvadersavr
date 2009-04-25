@@ -13,6 +13,6 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 
-uint8_t video_init(void);
-uint8_t video_enable(void);
-uint8_t video_disable(void);
+void video_init(void);
+void video_enable(void);
+void video_disable(void);
