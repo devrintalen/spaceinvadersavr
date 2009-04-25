@@ -98,27 +98,27 @@ void byteblast(uint8_t bytes[])
 
             // load byte and render
             ".MACRO loadrender\n\t"
-            "ld %0, -x\n\t"
+            "ld %1, -x\n\t"
             "blastbits\n\t"
             ".ENDM\n\t"
 
             // render byte
             ".MACRO blastbits\n\t"
-            "out %1, %0\n\t"
-            "lsl %0\n\t" 
-            "out %1, %0\n\t"
-            "lsl %0\n\t" 
-            "out %1, %0\n\t"
-            "lsl %0\n\t" 
-            "out %1, %0\n\t"
-            "lsl %0\n\t" 
-            "out %1, %0\n\t"
-            "lsl %0\n\t" 
-            "out %1, %0\n\t"
-            "lsl %0\n\t" 
-            "out %1, %0\n\t"
-            "lsl %0\n\t" 
-            "out %1, %0\n\t"
+            "out %0, %1\n\t"
+            "lsl %1\n\t" 
+            "out %0, %1\n\t"
+            "lsl %1\n\t" 
+            "out %0, %1\n\t"
+            "lsl %1\n\t" 
+            "out %0, %1\n\t"
+            "lsl %1\n\t" 
+            "out %0, %1\n\t"
+            "lsl %1\n\t" 
+            "out %0, %1\n\t"
+            "lsl %1\n\t" 
+            "out %0, %1\n\t"
+            "lsl %1\n\t" 
+            "out %0, %1\n\t"
             ".ENDM"
 
             // run 32 times...
@@ -154,6 +154,9 @@ void byteblast(uint8_t bytes[])
             "loadrender\n\t"
             "loadrender\n\t"
             "loadrender\n\t"
+            :: "I" (_SFR_IO_ADDR(PORTA))
+            : "r"
+            : "top"
             );
     return;
 }
