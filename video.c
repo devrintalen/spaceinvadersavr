@@ -91,6 +91,54 @@ ISR(TIMER0_COMP_vect)
 
 void byteblast(uint8_t bytes[])
 {
-    asm("");
+    uint8_t *top = &bytes[32];
+
+    asm(    "lds r26, top\n\t"
+            "lds r27, top+1\n\t"
+
+            // load byte and render
+            ".MACRO loadrender\n\t"
+            "ld %0, -x\n\t"
+            "blastbits\n\t"
+            ".ENDM\n\t"
+
+            // render byte
+            ".MACRO blastbits\n\t"
+            ".ENDM"
+
+            // run 32 times...
+            "loadrender\n\t"
+            "loadrender\n\t"
+            "loadrender\n\t"
+            "loadrender\n\t"
+            "loadrender\n\t"
+            "loadrender\n\t"
+            "loadrender\n\t"
+            "loadrender\n\t"
+            "loadrender\n\t"
+            "loadrender\n\t"
+            "loadrender\n\t"
+            "loadrender\n\t"
+            "loadrender\n\t"
+            "loadrender\n\t"
+            "loadrender\n\t"
+            "loadrender\n\t"
+            "loadrender\n\t"
+            "loadrender\n\t"
+            "loadrender\n\t"
+            "loadrender\n\t"
+            "loadrender\n\t"
+            "loadrender\n\t"
+            "loadrender\n\t"
+            "loadrender\n\t"
+            "loadrender\n\t"
+            "loadrender\n\t"
+            "loadrender\n\t"
+            "loadrender\n\t"
+            "loadrender\n\t"
+            "loadrender\n\t"
+            "loadrender\n\t"
+            "loadrender\n\t"
+            );
     return;
 }
