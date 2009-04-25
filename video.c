@@ -104,6 +104,21 @@ void byteblast(uint8_t bytes[])
 
             // render byte
             ".MACRO blastbits\n\t"
+            "out %1, %0\n\t"
+            "lsl %0\n\t" 
+            "out %1, %0\n\t"
+            "lsl %0\n\t" 
+            "out %1, %0\n\t"
+            "lsl %0\n\t" 
+            "out %1, %0\n\t"
+            "lsl %0\n\t" 
+            "out %1, %0\n\t"
+            "lsl %0\n\t" 
+            "out %1, %0\n\t"
+            "lsl %0\n\t" 
+            "out %1, %0\n\t"
+            "lsl %0\n\t" 
+            "out %1, %0\n\t"
             ".ENDM"
 
             // run 32 times...
