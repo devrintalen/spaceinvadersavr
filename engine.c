@@ -56,10 +56,17 @@ sprite_t create_sprite(uint8_t x, uint8_t y, uint8_t tile[])
     n->next = NULL;
 
     iter = sprite_hash[sp->y];
-    while (iter->next) {
-        iter = iter->next;
+    if (iter)
+    {
+        while (iter->next) {
+            iter = iter->next;
+        }
+        iter->next = n;
     }
-    iter->next = n;
+    else
+    {
+        sprite_hash[sp->y] = n;
+    }
 
     return sp;
 }
