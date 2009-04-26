@@ -13,75 +13,108 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 
+#include <stdlib.h>
 #include <stdint.h>
+#include <string.h>
 #include <assert.h>
+#include "engine.h"
 
 /* Sprite data structure.
  *
  * Sprite coordinates are measured from the upper-left corner of the screen,
  * with (0,0) the top-left and (255, 255) the bottom-right.
  */
-struct {
+struct sprite {
     uint8_t x;
     uint8_t y;
     uint8_t tile[8]; // 8x8 bits
-} sprite;
+};
 
-struct {
-    struct sprite *s;
-    struct node *next;
-} node;
+typedef struct node* node_t;
+struct node {
+    sprite_t s;
+    node_t next;
+};
     
-struct node sprite_hash[256];
+node_t sprite_hash[256];
 
 sprite_t create_sprite(uint8_t x, uint8_t y, uint8_t tile[])
 {
-    struct sprite sp;
-    struct node n;
-    struct node iter;
+    sprite_t sp;
+    node_t n;
+    node_t iter;
    
-    sp = malloc(sizeof(sprite));
-    n = malloc(sizeof(node));
-    if (!sp || !n) {
-        return NULL;
-    }
+    sp = malloc(sizeof(struct sprite));
+    n = malloc(sizeof(struct node));
+    assert(sp && n);
 
-    sp.x = x;
-    sp.y = y;
-    sp.tile = tile;
+    sp->x = x;
+    sp->y = y;
+    memcpy(tile, sp->tile, 8);
 
-    n.s = &sp;
-    n.next = NULL;
+    n->s = sp;
+    n->next = NULL;
 
-    iter = sprite_hash[sp.y];
+    iter = sprite_hash[sp->y];
     while (iter->next) {
         iter = iter->next;
     }
-    iter.next = &n;
+    iter->next = n;
 
-    return &sp;
+    return sp;
 }
 
-void remove_sprite(sprite_t s);
+void remove_sprite(sprite_t s)
 {
-    struct node *iter;
+    node_t prev, iter;
 
     assert(s);
-    assert(sprite_hash[s.y]);
+    assert(sprite_hash[s->y]);
 
-    iter = &sprite_hash[s.y];
-    if (iter->s == s)
+    prev = sprite_hash[s->y];
+    iter = prev->next;
+    if (prev->s == s)
     {
+        sprite_hash[s->y] = prev->next;
+        iter = prev;
     }
-    else
+    while ((iter->s != s) && iter)
     {
-        while ((iter->next) && (iter->s != s))
-        {
-            iter = iter->next;
-        }
-        assert(iter->s == s);
+        prev = iter;
+        iter = iter->next;
+    }
+    assert(iter->s == s);
+    prev->next = iter->next;
+    free(iter);
+    free(s);
+}
 
-
+/* Setter/getter methods for sprites. Abstracts sprite details from outside
+ * code.
+ */
+void sprite_set_x(sprite_t s, uint8_t x)
+{
+    s->x = x;
+}
+void sprite_set_y(sprite_t s, uint8_t y)
+{
+    s->y = y;
+}
+void sprite_set_data(sprite_t s, uint8_t data[])
+{
+    memcpy(data, s->tile, 8);
+}
+uint8_t sprite_get_x(sprite_t s)
+{
+    return s->x;
+}
+uint8_t sprite_get_y(sprite_t s)
+{
+    return s->y;
+}
+uint8_t* sprite_get_data(sprite_t s)
+{
+    return s->tile;
 }
 
 /* Returns uint8_t[32] for a total of 256 horizontal px. Bytes are to be
@@ -90,36 +123,37 @@ void remove_sprite(sprite_t s);
 uint8_t* render_line(uint8_t line)
 {
     uint8_t start_line;
-    uint8_t render[32]; // 256 horizontal px
-    uint8_t bits;
-    struct node n;
-    struct sprite sp;
+    uint8_t* render = malloc(32 * sizeof(uint8_t));
+    uint8_t bits, left_chunk, right_chunk;
+    uint8_t i;
+    sprite_t sp;
+    node_t iter;
 
     // Sprites to draw may be as far as 7 lines above
     start_line = (line - 7 < 0) ? 0 : line - 7;
 
     for (i = start_line; i <= line; i++)
     {
-        n = sprite_hash[i];
-        while (n)
+        iter = sprite_hash[i];
+        while (iter)
         {
-            sp = n->s;
-            bits = sp.tile[line - i];
-            left_chunk = 31 - (sp.x / 8);
+            sp = iter->s;
+            bits = sp->tile[line - i];
+            left_chunk = 31 - (sp->x / 8);
             right_chunk = left_chunk - 1;
 
             // Blit left bits of sprite
             if (left_chunk < 31)
             {
-                render[left_chunk] |= bits >> (sp.x % 8);
+                render[left_chunk] |= bits >> (sp->x % 8);
             }
             // Blit higher bits of sprite
             if (right_chunk < 31)
             {
-                render[right_chunk] |= bits << (8 - (sp.x % 8));
+                render[right_chunk] |= bits << (8 - (sp->x % 8));
             }
 
-            n = n->next;
+            iter = iter->next;
         }
     }
 

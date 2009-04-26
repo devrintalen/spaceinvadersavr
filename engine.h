@@ -13,10 +13,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 
-typedef sprite sprite_t;
+typedef struct sprite* sprite_t;
 
 // Sprite operations
-sprite_t create_sprite(void);
+sprite_t create_sprite(uint8_t x, uint8_t y, uint8_t tile[]);
 void remove_sprite(sprite_t s);
 // Setters/getters
 void sprite_set_x(sprite_t s, uint8_t x);
