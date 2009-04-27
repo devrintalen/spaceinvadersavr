@@ -71,7 +71,7 @@ sprite_t create_sprite(uint8_t x, uint8_t y, uint8_t tile[])
     return sp;
 }
 
-void remove_sprite(sprite_t s)
+void delete_sprite(sprite_t s)
 {
     node_t prev, iter;
 

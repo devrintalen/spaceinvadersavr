@@ -17,7 +17,7 @@ typedef struct sprite* sprite_t;
 
 // Sprite operations
 sprite_t create_sprite(uint8_t x, uint8_t y, uint8_t tile[]);
-void remove_sprite(sprite_t s);
+void delete_sprite(sprite_t s);
 // Setters/getters
 void sprite_set_x(sprite_t s, uint8_t x);
 void sprite_set_y(sprite_t s, uint8_t y);
