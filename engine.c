@@ -17,7 +17,6 @@
 #include <stdint.h>
 #include <string.h>
 #include <assert.h>
-#include "engine.h"
 
 /* Sprite data structure.
  *
@@ -33,9 +32,9 @@ struct sprite {
 typedef struct node* node_t;
 struct node {
     sprite_t s;
-    node_t next;
+    struct node* next;
 };
-    
+
 node_t sprite_hash[256];
 
 sprite_t create_sprite(uint8_t x, uint8_t y, uint8_t tile[])
@@ -50,7 +49,7 @@ sprite_t create_sprite(uint8_t x, uint8_t y, uint8_t tile[])
 
     sp->x = x;
     sp->y = y;
-    memcpy(tile, sp->tile, 8);
+    memcpy(sp->tile, tile, 8);
 
     n->s = sp;
     n->next = NULL;

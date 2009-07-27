@@ -15,6 +15,8 @@
 
 typedef struct sprite* sprite_t;
 
+#include "engine.c"
+
 // Sprite operations
 sprite_t create_sprite(uint8_t x, uint8_t y, uint8_t tile[]);
 void delete_sprite(sprite_t s);
