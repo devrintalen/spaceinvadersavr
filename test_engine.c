@@ -27,7 +27,7 @@ int main(void)
         };
     uint8_t sp3data[8] = {0};
     uint8_t* line;
-    uint8_t i, j;
+    int8_t i, j;
 
     printf("Beginning test.\n");
 
@@ -42,9 +42,9 @@ int main(void)
     for (i=0; i<8; i++)
     {
         line = render_line(i);
-        for (j=0; j<32; j++)
+        for (j=31; j>=0; j--)
         {
-            printf("%x", line[j]);
+            printf("%02x", line[j]);
         }
         printf("\n");
     }
