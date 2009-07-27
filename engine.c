@@ -149,12 +149,12 @@ uint8_t* render_line(uint8_t line)
             right_chunk = left_chunk - 1;
 
             // Blit left bits of sprite
-            if (left_chunk < 31)
+            if (left_chunk < 32)
             {
                 render[left_chunk] |= bits >> (sp->x % 8);
             }
             // Blit higher bits of sprite
-            if (right_chunk < 31)
+            if (right_chunk < 32)
             {
                 render[right_chunk] |= bits << (8 - (sp->x % 8));
             }
