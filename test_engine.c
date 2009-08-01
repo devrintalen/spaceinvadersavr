@@ -49,6 +49,11 @@ int main(void)
         printf("\n");
     }
 
+    printf("Garbage cleaning...\n");
+    delete_sprite(sp3);
+    delete_sprite(sp2);
+    delete_sprite(sp1);
+
     printf("End of test.\n");
 
     return 0;
