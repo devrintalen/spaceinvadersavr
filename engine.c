@@ -32,7 +32,7 @@ struct sprite {
 typedef struct node* node_t;
 struct node {
     sprite_t s;
-    struct node* next;
+    node_t next;
 };
 
 node_t sprite_hash[256];
